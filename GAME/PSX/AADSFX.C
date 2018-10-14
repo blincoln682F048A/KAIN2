@@ -219,11 +219,30 @@ void sfxCmdLockVoice(struct AadSfxCommand* sfxCmd /*$a0*/)
 	struct AadSynthVoice *voice; // $v1
 }
 
-void sfxCmdSetVoiceAttr(struct AadSfxCommand* sfxCmd /*$a0*/)
+void sfxCmdSetVoiceAttr(struct AadSfxCommand* sfxCmd)
 {
-	unsigned long v; // $s0
-	unsigned long vmask; // $v1
-	struct SpuVoiceAttr *voiceAttr; // $s1
+	unsigned long v;
+	unsigned long vmask;
+	struct SpuVoiceAttr* voiceAttr;
+
+	voiceAttr = (struct SpuVoiceAttr*)sfxCmd->ulongParam;
+	vmask = 1;
+
+	//loc_800577B0
+	for (v = 0; v < 0x18; v++)
+	{
+		if (vmask & voiceAttr->voice != 0)
+		{
+			break;
+		}//loc_800577D0
+
+		vmask <<= 1;
+	}//loc_800577D0
+
+	SpuSetVoiceVolume(v, voiceAttr->volume.left, voiceAttr->volume.right);
+	SpuSetVoicePitch(v, voiceAttr->pitch);
+	SpuSetVoiceStartAddr(v, voiceAttr->addr);
+	SpuSetVoiceADSR1ADSR2(v, voiceAttr->adsr1, voiceAttr->adsr2);
 }
 
 void sfxCmdSetVoiceKeyOn(struct AadSfxCommand* sfxCmd)
