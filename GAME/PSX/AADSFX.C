@@ -230,6 +230,10 @@ void sfxCmdSetVoiceKeyOn(struct AadSfxCommand* sfxCmd /*$a0*/)
 {
 }
 
-void sfxCmdSetVoiceKeyOff(struct AadSfxCommand* sfxCmd /*$a0*/)
+void sfxCmdSetVoiceKeyOff(struct AadSfxCommand* sfxCmd)
 {
+	aadMem->voiceKeyOffRequest |= sfxCmd->ulongParam;
+	aadMem->voiceKeyOnRequest &= -1;
+
+	return;
 }
