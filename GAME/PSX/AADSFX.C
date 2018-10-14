@@ -25,6 +25,33 @@ unsigned short aadStopAllSfx()
 	return 0;
 }
 
+unsigned short aadIsSfxPlaying(unsigned long handle)
+{
+	struct AadSynthVoice* voice;
+	unsigned short i;
+
+	//loc_800569B4
+	for(i = 0; i < 0x18; i++)
+	{
+		voice = &aadMem->synthVoice[i];
+		if (voice->voiceID == 0xD0)
+		{
+			if (aadMem->voiceStatus[i] != 0)
+			{
+				if (aadMem->voiceStatus[i] != 2)
+				{
+					if (voice->handle == handle)
+					{
+						return 1;
+					}
+				}//loc_80056A08
+			}//loc_80056A08
+		}//loc_80056A08
+	}
+
+	return 0;
+}
+
 unsigned short aadStopAllSlots()
 {
 	struct _AadSequenceSlot* slot;
