@@ -76,6 +76,44 @@ unsigned long createSfxHandle(unsigned short toneID)
 	return aadMem->sfxSlot.handleCounter << 16 | toneID & 0xFFFF;
 }
 
+void aadPutSfxCommand(unsigned char statusByte, unsigned char dataByte0, unsigned char dataByte1, unsigned long ulongParam, int shortParam)
+{
+	struct AadSfxCommand* sfxCmd;
+
+	if (aadMem->sfxSlot.commandsInQueue > 0x1D)
+	{
+		statusByte = 4;
+
+		if (aadMem->sfxSlot.commandsInQueue > 0x1E)
+		{
+			return;
+		}
+	}//loc_80056BC8
+
+	EnterCriticalSection();
+
+	sfxCmd = &aadMem->sfxSlot.commandQueue[aadMem->sfxSlot.commandIn];
+	sfxCmd->statusByte = statusByte;
+	sfxCmd->dataByte[0] = dataByte0;
+	sfxCmd->dataByte[1] = dataByte1;
+	sfxCmd->ulongParam = ulongParam;
+	sfxCmd->shortParam = shortParam;
+	
+	//Max
+	if ((++aadMem->sfxSlot.commandIn) & 0xFF == 0x20)
+	{
+		//Reset
+		aadMem->sfxSlot.commandIn = 0;
+	}
+	//loc_80056C34
+	
+	++aadMem->sfxSlot.commandsInQueue;
+	
+	ExitCriticalSection();
+
+	return;
+}
+
 unsigned short aadStopAllSlots()
 {
 	struct _AadSequenceSlot* slot;
