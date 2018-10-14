@@ -8,8 +8,14 @@ unsigned long aadPlaySfx(unsigned short toneID, unsigned short volume, unsigned 
 	unsigned long handle;
 
 	handle = createSfxHandle(toneID);
-	aadPutSfxCommand(0, volume, pan, handle, pitchOffset);
+	aadPutSfxCommand(0, volume, pan, handle, 0);
 
+	return handle;
+}
+
+unsigned long aadStopSfx(unsigned long handle /*$s0*/)
+{
+	aadPutSfxCommand(1, 0, 0, handle, 0);
 	return handle;
 }
 
