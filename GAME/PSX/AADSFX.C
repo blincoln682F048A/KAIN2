@@ -226,8 +226,9 @@ void sfxCmdSetVoiceAttr(struct AadSfxCommand* sfxCmd /*$a0*/)
 	struct SpuVoiceAttr *voiceAttr; // $s1
 }
 
-void sfxCmdSetVoiceKeyOn(struct AadSfxCommand* sfxCmd /*$a0*/)
+void sfxCmdSetVoiceKeyOn(struct AadSfxCommand* sfxCmd)
 {
+	aadMem->voiceKeyOnRequest |= sfxCmd->ulongParam;
 }
 
 void sfxCmdSetVoiceKeyOff(struct AadSfxCommand* sfxCmd)
