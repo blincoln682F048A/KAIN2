@@ -1,5 +1,14 @@
 #include "GAMEPAD.H"
 
+#include "G2TYPES.H"
+
+#include <LIBAPI.H>
+#include <LIBETC.H>
+#include <LIBPAD.H>
+#include <STDLIB.H>
+#include <STDIO.H>
+#include <STRING.H>
+
 void GAMEPAD_Commands(long* command[5] /*$t4*/, long *data[5] /*$t3*/, long pad /*$a2*/)
 {
 	long analogX; // $t2
@@ -24,6 +33,45 @@ void  GAMEPAD_Init()
 {
 	int dualShock; // $s0
 	int padState; // $v0
+
+
+	ResetRCnt((unsigned long)&readGPBuffer1);///@FIXME check
+	PadStartCom();
+
+	dualshock0_time = 0;
+	dualshock1_time = 0;
+	align_flag = 0;
+	dualshock_onflag = 0;
+
+	//loc_800327B4
+	do
+	{
+		VSync(0);
+		padState = PadGetState(0);
+
+		if (padState == 4)
+		{
+			dualShock = 1;
+		}
+		//loc_800327D0
+	} while (padState == 1 || padState == 4 || padState == 5);
+
+	if (dualShock != 0)
+	{
+		PadSetMainMode(0, 1, 3);
+	}
+
+	
+	//loc_800327FC
+	memset(&gDummyCommand[0][0], 0, sizeof(gDummyCommand));
+	memset(&readGPBuffer1, 0, 0x22);
+	memset(&readGPBuffer2, 0, 0x22);
+	gpbuffer1.data = 0xFFFF;
+	gpbuffer1.transStatus = 0;
+	gpbuffer2.data = 0xFFFF;
+	gpbuffer2.transStatus = 0;
+
+	return;
 }
 
 void GAMEPAD_FillOutDemoNames(char* baseAreaName /*$s0*/, char* demoName /*$s1*/)
