@@ -66,6 +66,16 @@ unsigned long aadSetSfxVolPanPitch(unsigned long handle, unsigned short volume, 
 	return handle;
 }
 
+unsigned long createSfxHandle(unsigned short toneID)
+{
+	if ((++aadMem->sfxSlot.handleCounter) & 0xFFFF == 0)
+	{
+		++aadMem->sfxSlot.handleCounter;
+	}
+	//loc_80056B60
+	return aadMem->sfxSlot.handleCounter << 16 | toneID & 0xFFFF;
+}
+
 unsigned short aadStopAllSlots()
 {
 	struct _AadSequenceSlot* slot;
@@ -106,6 +116,6 @@ unsigned short aadShutdownReverb()
 
 unsigned short aadCancelPauseSound()
 {
-	aadMem[0].flags &= 0xFFF3;
+	aadMem->flags &= 0xFFF3;
 	return 0;
 }
