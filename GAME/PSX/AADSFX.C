@@ -151,6 +151,25 @@ unsigned short aadStopAllSlots()
 	return 0;
 }
 
+unsigned short aadStopSlot(unsigned short slotNumber)
+{
+	struct _AadSequenceSlot* slot;
+
+	if (slotNumber < aadMem->numSlots)
+	{
+		slot = aadMem->sequenceSlots[slotNumber];
+
+		if (slot->sequenceNumberAssigned != 0xFF)
+		{
+			slot->status &= 0xFFFE;
+			aadInitSequenceSlot(slot);
+			aadAllNotesOff(slotNumber);
+		}//loc_800545F4
+	}//loc_800545F4
+
+	return 0;
+}
+
 unsigned short aadShutdownReverb()
 {
 	if (aadWaitForSramTransferComplete() != 0)
