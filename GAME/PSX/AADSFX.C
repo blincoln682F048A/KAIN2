@@ -213,10 +213,23 @@ void sfxCmdSetToneVolPanPitch(struct AadSfxCommand* sfxCmd /*$s2*/)
 	} // line 23, offset 0x800574f8*/
 }
 
-void sfxCmdLockVoice(struct AadSfxCommand* sfxCmd /*$a0*/)
+void sfxCmdLockVoice(struct AadSfxCommand* sfxCmd)
 {
 	void(*callbackProc)(); // $s0
-	struct AadSynthVoice *voice; // $v1
+	struct AadSynthVoice* voice; // $v1
+
+	callbackProc = sfxCmd->ulongParam;///@FIXME assign
+	voice = aadAllocateVoice(0xFF);
+
+	if (voice != NULL)
+	{
+		voice->flags |= 1;
+		callbackProc(voice->voiceMask);///@FIXME illegal no args
+	}//loc_80057778
+	else
+	{
+		callbackProc(0);///@FIXME illegal no args
+	}
 }
 
 void sfxCmdSetVoiceAttr(struct AadSfxCommand* sfxCmd)
@@ -243,11 +256,15 @@ void sfxCmdSetVoiceAttr(struct AadSfxCommand* sfxCmd)
 	SpuSetVoicePitch(v, voiceAttr->pitch);
 	SpuSetVoiceStartAddr(v, voiceAttr->addr);
 	SpuSetVoiceADSR1ADSR2(v, voiceAttr->adsr1, voiceAttr->adsr2);
+
+	return;
 }
 
 void sfxCmdSetVoiceKeyOn(struct AadSfxCommand* sfxCmd)
 {
 	aadMem->voiceKeyOnRequest |= sfxCmd->ulongParam;
+
+	return;
 }
 
 void sfxCmdSetVoiceKeyOff(struct AadSfxCommand* sfxCmd)
