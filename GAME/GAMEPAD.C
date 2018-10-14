@@ -34,6 +34,7 @@ void  GAMEPAD_Init()
 	int dualShock; // $s0
 	int padState; // $v0
 
+	dualShock = 0;
 
 	ResetRCnt((unsigned long)&readGPBuffer1);///@FIXME check
 	PadStartCom();
