@@ -3,6 +3,16 @@
 #include "G2TYPES.H"
 #include <LIBSPU.H>
 
+unsigned long aadPlaySfx(unsigned short toneID, unsigned short volume, unsigned short pan, short pitchOffset)
+{
+	unsigned long handle;
+
+	handle = createSfxHandle(toneID);
+	aadPutSfxCommand(0, volume, pan, handle, pitchOffset);
+
+	return handle;
+}
+
 unsigned short aadStopAllSfx()
 {
 	aadPutSfxCommand(4, 0, 0, 0, 0);
