@@ -114,6 +114,17 @@ void aadPutSfxCommand(unsigned char statusByte, unsigned char dataByte0, unsigne
 	return;
 }
 
+void aadExecuteSfxCommand(struct AadSfxCommand* sfxCmd)
+{
+	if (sfxCmd->statusByte < 9)
+	{
+		sfxCmdFunction[sfxCmd->statusByte]();//sfxCmdFunction = functionTbl, statusByte = Index
+
+	}
+	//loc_80056CB0
+	return;
+}
+
 unsigned short aadStopAllSlots()
 {
 	struct _AadSequenceSlot* slot;
