@@ -3,6 +3,11 @@
 #include "G2TYPES.H"
 #include <LIBSPU.H>
 
+unsigned long aadGetMemorySize(struct AadInitAttr* attributes)
+{
+	return ((((attributes->numSlots << 1) + attributes->numSlots) << 5) - (attributes->numSlots << 1) + attributes->numSlots) << 2) + 0x1C14;
+}
+
 unsigned short aadStopSlot(unsigned short slotNumber)
 {
 	struct _AadSequenceSlot* slot;
