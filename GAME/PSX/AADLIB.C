@@ -618,13 +618,10 @@ unsigned short /*$ra*/ aadUnMuteChannels(unsigned short slotNumber /*$a0*/, unsi
 unsigned short /*$ra*/ aadSetUserVariable(unsigned short variableNumber /*$a0*/, unsigned short value /*$a1*/)
 {
 }
-/*
-* Offset 0x80054A70
-* C:\kain2\game\PSX\AADLIB.C (line 2634)
-* Stack frame base $sp, size 0
-*/
-unsigned short /*$ra*/ aadGetUserVariable(unsigned short variableNumber /*$a0*/)
+
+unsigned short aadGetUserVariable(unsigned short variableNumber)
 {
+	return aadMem->userVariables[variableNumber];
 }
 
 unsigned short aadSetNoUpdateMode(short noUpdate)
