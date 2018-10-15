@@ -1,6 +1,8 @@
 #ifndef G2TYPES_H
 #define G2TYPES_H
 
+#include <LIBCD.H>
+
 typedef unsigned short PadData;
 
 typedef struct
@@ -570,6 +572,13 @@ struct _PVertex
 	short x;
 	short y;
 	long otz;
+};
+
+struct CVECTOR {
+	unsigned char r;
+	unsigned char g;
+	unsigned char b;
+	unsigned char cd;
 };
 
 struct _VertexPool
