@@ -2,6 +2,9 @@
 
 #include "G2TYPES.H"
 
+#include <STDLIB.H>
+#include <STDIO.H>
+
 struct SoundEffectChannel * /*$ra*/ SndOpenSfxChannel(unsigned char *channelNum /*$a0*/)
 { // line 2, offset 0x80041760
     short i; // $a1
@@ -173,13 +176,29 @@ void /*$ra*/ SOUND_ExtractNum(char *outNum /*$a0*/, char *inString /*$a1*/)
 {
 }
 
-void /*$ra*/ SOUND_LoadDynamicMusic(char *baseMusicName /*$s3*/)
-{ // line 1, offset 0x80042904
-    char soundName[32]; // stack offset -136
-    char soundNumber[16]; // stack offset -104
-    char sndFileName[64]; // stack offset -88
-    static char smpFileName[64]; // offset 0x0
-} // line 25, offset 0x800429d4
+void SOUND_LoadDynamicMusic(char* baseMusicName)
+{
+	char soundName[32];
+	char soundNumber[16];
+	char sndFileName[64];
+	static char smpFileName[64];
+
+	if (baseMusicName != NULL)
+	{
+		if (strcmpi(baseMusicName, &gameTrackerX.curDynamicSoundName[0]))
+		{
+			SOUND_ExtractName(&soundName[0], baseMusicName);
+			SOUND_ExtractNum(&soundNumber[0], baseMusicName);
+		}//loc_800429D4
+	}//loc_800429D4
+
+	sprintf(&sndFileName[0], "\\kain2\\music\\%s%s\\%s%s.snd", &soundName[0], &soundNumber[0], &soundName[0], &soundNumber[0]);
+	sprintf(&smpFileName[0], "\\kain2\\music\\%s%s\\%s%s.smp", &soundName[0], &soundNumber[0], &soundName[0], &soundNumber[0]);
+	aadLoadDynamicSoundBank(&sndFileName[0], &smpFileName[0], 1, &soundNumber[0], SOUND_DynamicMusicReturn);
+	strcpy(gameTrackerX.curDynamicSoundName, &baseMusicName[0]);
+
+	return;
+}
 
 void SOUND_FreeDynamicMusic()
 {
@@ -187,7 +206,7 @@ void SOUND_FreeDynamicMusic()
 	{
 		aadStopAllSlots();
 		aadFreeDynamicSoundBank();
-		gameTracker->curDynamicSoundName[0] = 0;
+		gameTrackerX.curDynamicSoundName[0] = 0;
 	}//loc_80042A20
 }
 
