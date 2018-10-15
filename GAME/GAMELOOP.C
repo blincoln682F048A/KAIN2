@@ -29,3 +29,8 @@ void GAMELOOP_SystemInit(struct GameTracker* gameTracker)
 	INSTANCE_InitInstanceList(instanceList, instancePool);
 	GAMELOOP_InitGameTracker();
 }
+
+void GAMELOOP_ResetGameStates()
+{
+	EVENT_Init();
+}
