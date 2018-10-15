@@ -80,8 +80,10 @@ void /*$ra*/ SOUND_Init()
     struct AadInitAttr initAttr; // stack offset -32
 } // line 1, offset 0x800423e0
 
-void /*$ra*/ SOUND_Free()
+void SOUND_Free()
 {
+	gameTrackerX.sound.soundsLoaded = 0;
+	aadShutdown();
 }
 
 void /*$ra*/ SOUND_SetMusicVariable(short variable /*$a0*/, short value /*$a1*/)
