@@ -1,7 +1,11 @@
 #ifndef G2TYPES_H
 #define G2TYPES_H
 
+#include <SYS\TYPES.H>
+#include <LIBGTE.H>
+#include <LIBGPU.H>
 #include <LIBCD.H>
+#include <LIBSPU.H>
 
 typedef unsigned short PadData;
 
@@ -65,10 +69,29 @@ struct _G2AppDataVM_Type
 	int* argv;
 };
 
+struct NodeType
+{
+	struct NodeType* prev;
+	struct NodeType* next;
+};
+
 struct fake97
 {
 	void* intro;
 	long model;
+};
+
+struct AadInitAttr
+{
+	unsigned short updateMode;
+	unsigned short numSlots;
+	void(*nonBlockLoadProc)();
+	void(*nonBlockBufferedLoadProc)();
+	void *(*memoryMallocProc)();
+	void(*memoryFreeProc)();
+	unsigned char memMallocType;
+	unsigned char unused1;
+	unsigned short unused2;
 };
 
 struct Signal
@@ -93,6 +116,12 @@ struct _FX_MATRIX
 	struct NodeType node;
 	long flags;
 	struct MATRIX lwTransform;
+};
+
+struct _Position {
+	short x; // size=0, offset=0
+	short y; // size=0, offset=2
+	short z; // size=0, offset=4
 };
 
 struct _FX_PRIM {
@@ -130,7 +159,7 @@ struct _FXTracker
 	struct _FX_PRIM primPool[256];
 	struct NodeType usedPrimList;
 	struct NodeType usedPrimListSprite;
-	struct NodeType freePrimList
+	struct NodeType freePrimList;
 };
 
 struct _PolytopeList
@@ -147,13 +176,6 @@ struct DebugMenuLine
 	char* text;
 	long* var_address;
 	long bit_mask;
-};
-
-struct _Position
-{
-	short x;
-	short y;
-	short z;
 };
 
 struct _Rotation
@@ -335,14 +357,6 @@ struct EventAliasCommandStruct
 	short newframe;
 	short interpframes;
 };
-
-struct NodeType
-{
-	struct NodeType* prev;
-	struct NodeType* next;
-};
-
-
 
 struct SoundInstance
 {
@@ -715,6 +729,48 @@ struct GameTracker
 	long visibleInstances;
 	short frameRateLock;
 	short frameRate24fps;
+};
+
+struct XAFileInfo {
+	int startPos; // size=0, offset=0
+};
+
+struct CdCommand {
+	unsigned short flags; // size=0, offset=0
+	unsigned char unused; // size=0, offset=2
+	unsigned char cdCommand; // size=0, offset=3
+	unsigned char cdCmdParam[4]; // size=4, offset=4
+};
+struct VoiceCommand {
+	unsigned char voiceCmd; // size=0, offset=0
+	unsigned char nextVoiceStatus; // size=0, offset=1
+	unsigned short voiceCmdParam; // size=0, offset=2
+};
+
+struct XAVoiceTracker {
+	CdlLOC currentPos; // size=4, offset=0
+	int currentSector; // size=0, offset=4
+	int endSector; // size=0, offset=8
+	void(*prevCallback)(); // size=0, offset=12
+	unsigned char cdResult[8]; // size=8, offset=16
+	struct CdCommand cdCmdQueue[8]; // size=64, offset=24
+	unsigned short requestQueue[4]; // size=8, offset=88
+	struct VoiceCommand voiceCmdQueue[16]; // size=64, offset=96
+	unsigned char cdCmdIn; // size=0, offset=160
+	unsigned char cdCmdOut; // size=0, offset=161
+	unsigned char cdCmdsQueued; // size=0, offset=162
+	unsigned char reqIn; // size=0, offset=163
+	unsigned char reqOut; // size=0, offset=164
+	unsigned char reqsQueued; // size=0, offset=165
+	unsigned char voiceCmdIn; // size=0, offset=166
+	unsigned char voiceCmdOut; // size=0, offset=167
+	unsigned char voiceCmdsQueued; // size=0, offset=168
+	unsigned char unused1; // size=0, offset=169
+	unsigned char voiceStatus; // size=0, offset=170
+	unsigned char cdStatus; // size=0, offset=171
+	short fileNum; // size=0, offset=172
+	short unused2; // size=0, offset=174
+	struct XAFileInfo xaFileInfo[13]; // size=52, offset=176
 };
 
 struct MainTracker
@@ -1112,6 +1168,461 @@ struct AadSlotAttributes {
 	unsigned short eventsInQueue; // size=0, offset=10
 };
 
+struct __EngagedInstance {
+	struct _Instance *instance; // size=672, offset=0
+	unsigned long distance; // size=0, offset=4
+};
+
+struct __FitPoint {
+	short x; // size=0, offset=0
+	short y; // size=0, offset=2
+};
+
+struct __GlyphHudSaveData {
+	short MANNA_Count; // size=0, offset=0
+	short HUD_Count; // size=0, offset=2
+};
+
+struct __SensoryData {
+	int Flags; // size=0, offset=0
+	struct _SVector ForwardNormal; // size=8, offset=4
+	struct _SVector AboveNormal; // size=8, offset=12
+	struct _SVector BelowNormal; // size=8, offset=20
+	struct _SVector BelowPoint; // size=8, offset=28
+	struct _SVector Delta; // size=8, offset=36
+	struct _Instance *HitMonster; // size=672, offset=44
+	struct _Instance *CurrentAutoFace; // size=672, offset=48
+	struct _Instance *LastAutoFace; // size=672, offset=52
+	struct __EngagedInstance *EngagedList; // size=8, offset=56
+	unsigned long EngagedMask; // size=0, offset=60
+	struct _Position lookAtPoint; // size=6, offset=64
+};
+
+struct _Vector {
+	long x; // size=0, offset=0
+	long y; // size=0, offset=4
+	long z; // size=0, offset=8
+};
+
+struct __Force {
+	int Type; // size=0, offset=0
+	struct _Vector LinearForce; // size=12, offset=4
+	short Friction; // size=0, offset=16
+};
+
+struct _G2AnimChanStatusBlockPool_Type {
+	unsigned short blockSize; // size=0, offset=0
+	unsigned short stackTop; // size=0, offset=2
+	unsigned short stackSize; // size=0, offset=4
+	unsigned short *stack; // size=0, offset=8
+	struct _G2AnimChanStatusBlock_Type *blockPool; // size=36, offset=12
+};
+
+struct _G2AnimControllerPool_Type {
+	unsigned short blockSize; // size=0, offset=0
+	unsigned short stackTop; // size=0, offset=2
+	unsigned short stackSize; // size=0, offset=4
+	unsigned short *stack; // size=0, offset=8
+	struct _G2AnimController_Type *blockPool; // size=36, offset=12
+};
+
+struct _G2AnimInterpStateBlockPool_Type {
+	unsigned short blockSize; // size=0, offset=0
+	unsigned short stackTop; // size=0, offset=2
+	unsigned short stackSize; // size=0, offset=4
+	unsigned short *stack; // size=0, offset=8
+	struct _G2AnimInterpStateBlock_Type *blockPool; // size=164, offset=12
+};
+
+struct __Event {
+	int ID; // size=0, offset=0
+	int Data; // size=0, offset=4
+};
+
+struct __MessageQueue {
+	int Head; // size=0, offset=0
+	int Tail; // size=0, offset=4
+	struct __Event Queue[16]; // size=128, offset=8
+};
+
+struct __State {
+	void(*Process)(); // size=0, offset=0
+	struct __MessageQueue Event; // size=136, offset=4
+	struct __MessageQueue Defer; // size=136, offset=140
+	int Data1; // size=0, offset=276
+	int Data2; // size=0, offset=280
+};
+
+struct __CharacterState {
+	struct _Instance *CharacterInstance; // size=672, offset=0
+	int TotalSections; // size=0, offset=4
+	struct __State SectionList[3]; // size=852, offset=8
+};
+
+struct __Player {
+	struct __CharacterState State; // size=860, offset=0
+	int Mode; // size=0, offset=860
+	int RotationSegment; // size=0, offset=864
+	struct _SVector iVelocity; // size=8, offset=868
+	int Magnitude; // size=0, offset=876
+	int input; // size=0, offset=880
+	int lastInput; // size=0, offset=884
+	int ZDirection; // size=0, offset=888
+	short Bearing; // size=0, offset=892
+	short LastBearing; // size=0, offset=894
+	int steeringMode; // size=0, offset=896
+	short steeringVelocity; // size=0, offset=900
+	short steeringAcceleration; // size=0, offset=902
+	int steeringLockRotation; // size=0, offset=904
+	int movementMinRate; // size=0, offset=908
+	short movementMinAnalog; // size=0, offset=912
+	short movementMaxAnalog; // size=0, offset=914
+	struct __SensoryData Senses; // size=72, offset=916
+	struct _Instance *attachedPlatform; // size=672, offset=988
+	short HealthScale; // size=0, offset=992
+	short HealthBalls; // size=0, offset=994
+	int HitPoints; // size=0, offset=996
+	int DamageFrequency; // size=0, offset=1000
+	int Abilities; // size=0, offset=1004
+	struct _Instance *GlyphSystem; // size=672, offset=1008
+	int GlyphManaBalls; // size=0, offset=1012
+	struct __FitPoint *constrictData; // size=4, offset=1016
+	short constrictIndex; // size=0, offset=1020
+	short constrictWaitIndex; // size=0, offset=1022
+	struct _SVector constrictCenter; // size=8, offset=1024
+	short constrictFlag; // size=0, offset=1032
+	short constrictGoodCircle; // size=0, offset=1034
+	unsigned long constrictXTotal; // size=0, offset=1036
+	unsigned long constrictYTotal; // size=0, offset=1040
+	struct _Instance *soulReaver; // size=672, offset=1044
+	unsigned long currentSoulReaver; // size=0, offset=1048
+	int CurrentPlane; // size=0, offset=1052
+	int slipSlope; // size=0, offset=1056
+	unsigned long idleCount; // size=0, offset=1060
+	struct _Instance *idleInstance; // size=672, offset=1064
+	struct __AttackItem *attack; // size=36, offset=1068
+	int attackFlags; // size=0, offset=1072
+	struct _Instance *attackCurrentHit; // size=672, offset=1076
+	struct _Instance *attackLastHit; // size=672, offset=1080
+	struct _FXGlowEffect *glowEffect; // size=44, offset=1084
+	struct _Instance *attackedBy; // size=672, offset=1088
+	struct __ThrowItem *throwData; // size=32, offset=1092
+	int throwMode; // size=0, offset=1096
+	struct _Position throwTarget; // size=6, offset=1100
+	struct _Instance *throwInstance; // size=672, offset=1108
+	short throwXRot; // size=0, offset=1112
+	short throwZRot; // size=0, offset=1114
+	void(*returnState)(); // size=0, offset=1116
+	unsigned long passedMask; // size=0, offset=1120
+	struct _G2SVector3_Type extraRot; // size=6, offset=1124
+	int effectsFlags; // size=0, offset=1132
+	short effectsFadeSource; // size=0, offset=1136
+	short effectsFadeDest; // size=0, offset=1138
+	int effectsFadeStep; // size=0, offset=1140
+	int effectsFadeSteps; // size=0, offset=1144
+	short autoFaceZone; // size=0, offset=1148
+	short autoFaceAngle; // size=0, offset=1150
+	int autoFaceLastRootAngle; // size=0, offset=1152
+	int autoFaceRootAngle; // size=0, offset=1156
+	int autoFaceTrueAngle; // size=0, offset=1160
+	int autoFaceAnim; // size=0, offset=1164
+	int autoFaceLastAnim; // size=0, offset=1168
+	int nothingCounter; // size=0, offset=1172
+	int timeAccumulator; // size=0, offset=1176
+	struct _Instance *possessed; // size=672, offset=1180
+	int possessedCheckMask; // size=0, offset=1184
+	struct _Position puppetMoveToPoint; // size=6, offset=1188
+	int soundModifier; // size=0, offset=1196
+	short alarmTable; // size=0, offset=1200
+	short terminator; // size=0, offset=1202
+	short swimSpeedAdjustment; // size=0, offset=1204
+	short swimTargetSpeed; // size=0, offset=1206
+};
+
+struct _MonsterFunctionTable {
+	void(*initFunc)(); // size=0, offset=0
+	void(*cleanUpFunc)(); // size=0, offset=4
+	void(*damageEffectFunc)(); // size=0, offset=8
+	unsigned long(*queryFunc)(); // size=0, offset=12
+	void(*messageFunc)(); // size=0, offset=16
+	struct _MonsterStateChoice *stateFuncs; // size=12, offset=20
+	char *versionID; // size=0, offset=24
+	char *localVersionID; // size=0, offset=28
+};
+
+struct _MonsterState {
+	void(*entryFunction)(); // size=0, offset=0
+	void(*stateFunction)(); // size=0, offset=4
+};
+
+struct burntTuneType {
+	int burntDist; // size=0, offset=0
+	int fadeDelta; // size=0, offset=4
+};
+
+struct _SavedCinematic {
+	struct _Position position; // size=6, offset=0
+	struct _Position focusPoint; // size=6, offset=6
+	struct _Position base; // size=6, offset=12
+	struct _Position targetPos; // size=6, offset=18
+	struct _Position targetFocusPoint; // size=6, offset=24
+	struct _Position targetBase; // size=6, offset=30
+	struct _Rotation baseRot; // size=8, offset=36
+	struct _Rotation focusRotation; // size=8, offset=44
+	struct _Rotation targetFocusRotation; // size=8, offset=52
+	short focusDistance; // size=0, offset=60
+	short targetFocusDistance; // size=0, offset=62
+	struct _SVector focusPointVel; // size=8, offset=64
+	struct _SVector focusPointAccl; // size=8, offset=72
+	struct _SVector baseVel; // size=8, offset=80
+	struct _SVector baseAccl; // size=8, offset=88
+	long maxVel; // size=0, offset=96
+	struct MultiSpline *posSpline; // size=0, offset=100
+	struct MultiSpline *targetSpline; // size=0, offset=104
+	struct Level *level; // size=0, offset=108
+};
+
+struct _Sphere {
+	struct _Position position; // size=6, offset=0
+	unsigned short radius; // size=0, offset=6
+	unsigned long radiusSquared; // size=0, offset=8
+};
+
+struct DVECTOR {
+	short vx; // size=0, offset=0
+	short vy; // size=0, offset=2
+};
+
+struct EventTimer {
+	long flags : 1; // offset=0.0
+	long time : 31; // offset=0.1
+	struct Event *event; // size=28, offset=4
+	struct ScriptPCode *actionScript; // size=8, offset=8
+	short *scriptPos; // size=0, offset=12
+	struct Level *level; // size=372, offset=16
+	long nextEventIndex; // size=0, offset=20
+};
+
+struct LoadQueueEntry {
+	long fileId; // size=0, offset=0
+	short status; // size=0, offset=4
+	short relocateBinary; // size=0, offset=6
+	void *retFunc; // size=0, offset=8
+	void *retData; // size=0, offset=12
+	void *retData2; // size=0, offset=16
+	void **retPointer; // size=0, offset=20
+	struct NonBlockLoadEntry loadEntry; // size=64, offset=24
+};
+
+struct MissileGraphics {
+	unsigned char object; // size=0, offset=0
+	unsigned char model; // size=0, offset=1
+};
+
+struct NewMemTracker {
+	struct MemHeader *rootNode; // size=8, offset=0
+	unsigned long totalMemory; // size=0, offset=4
+	unsigned long currentMemoryUsed; // size=0, offset=8
+	char *lastMemoryAddress; // size=0, offset=12
+	long doingGarbageCollection; // size=0, offset=16
+};
+
+struct PoolManagementData {
+	char state; // size=0, offset=0
+	unsigned char numNodesInPool; // size=0, offset=1
+	struct _Position playerPosAtLastPlanMkrUpdate; // size=6, offset=2
+	struct PlanningNode *expansionNode1; // size=28, offset=8
+	struct PlanningNode *expansionNode2; // size=28, offset=12
+	unsigned short *distanceMatrix[32]; // size=4, offset=16
+	unsigned short pairType; // size=0, offset=20
+	struct _Position peakPos; // size=6, offset=22
+	unsigned char currentNode; // size=0, offset=28
+	unsigned char currentBit; // size=0, offset=29
+};
+
+struct RadarInfo {
+	short angle; // size=0, offset=0
+	short x; // size=0, offset=2
+	short y; // size=0, offset=4
+};
+
+struct SavedInfoTracker {
+	char *InfoStart; // size=0, offset=0
+	char *InfoEnd; // size=0, offset=4
+	char *EndOfMemory; // size=0, offset=8
+};
+
+struct SVECTOR {
+	short vx; // size=0, offset=0
+	short vy; // size=0, offset=2
+	short vz; // size=0, offset=4
+	short pad; // size=0, offset=6
+};
+
+struct WaterLevelProcess {
+	long flags; // size=0, offset=0
+	struct BSPTree *bspTree; // size=36, offset=4
+	struct _StreamUnit *streamUnit; // size=0, offset=8
+	short oldWaterZ; // size=0, offset=12
+	short oldGlobalOffset; // size=0, offset=14
+	short zValueFrom; // size=0, offset=16
+	short zValueTo; // size=0, offset=18
+	short maxSteps; // size=0, offset=20
+	short curStep; // size=0, offset=22
+};
+
+struct Camera {
+	struct _Position position; // size=6, offset=0
+	short pad1; // size=0, offset=6
+	struct MATRIX vvNormalWorVecMat[2]; // size=64, offset=8
+	long vvPlaneConsts[6]; // size=24, offset=72
+	struct MATRIX *wcTransform; // size=32, offset=96
+	struct MATRIX *wcTransform2; // size=32, offset=100
+	struct MATRIX *cwTransform2; // size=32, offset=104
+	struct _Normal viewVolumeNormal[5]; // size=40, offset=108
+	long projDistance; // size=0, offset=148
+	long projWidth; // size=0, offset=152
+	long projHeight; // size=0, offset=156
+	struct _SVector screenScale; // size=8, offset=160
+	short shake; // size=0, offset=168
+	short shakeScale; // size=0, offset=170
+	long nearPlane; // size=0, offset=172
+	long farPlane; // size=0, offset=176
+	long flags; // size=0, offset=180
+	long lock; // size=0, offset=184
+	short mode; // size=0, offset=188
+	short state; // size=0, offset=190
+	short posState; // size=0, offset=192
+	short rotState; // size=0, offset=194
+	short tiltState; // size=0, offset=196
+	short distanceState; // size=0, offset=198
+	struct _Rotation rotation; // size=8, offset=200
+	short lagZ; // size=0, offset=208
+	short tilt; // size=0, offset=210
+	struct _Position focusPoint; // size=6, offset=212
+	short focusDistance; // size=0, offset=218
+	struct _Instance *focusInstance; // size=672, offset=220
+	struct _Position oldFocusInstancePos; // size=6, offset=224
+	struct _Position newFocusInstancePos; // size=6, offset=230
+	struct _Rotation oldFocusInstanceRot; // size=8, offset=236
+	struct _Rotation newFocusInstanceRot; // size=8, offset=244
+	struct _SVector focusInstanceVelVec; // size=8, offset=252
+	struct _Position focusLeadPivot; // size=6, offset=260
+	struct _Position focusOffset; // size=6, offset=266
+	struct _Rotation focusRotation; // size=8, offset=272
+	short tiltVel; // size=0, offset=280
+	short tiltAccl; // size=0, offset=282
+	struct _SVector positionVel; // size=8, offset=284
+	struct _SVector positionAccl; // size=8, offset=292
+	struct _SVector focusPointVel; // size=8, offset=300
+	struct _SVector focusPointAccl; // size=8, offset=308
+	short focusDistanceVel; // size=0, offset=316
+	short focusDistanceAccl; // size=0, offset=318
+	struct _SVector focusRotVel; // size=8, offset=320
+	struct _SVector focusRotAccl; // size=8, offset=328
+	struct _SVector maxFocusVel; // size=8, offset=336
+	struct _SVector rotationVel; // size=8, offset=344
+	struct _SVector rotationAccl; // size=8, offset=352
+	short maxVel; // size=0, offset=360
+	short maxRot; // size=0, offset=362
+	struct _Position targetPos; // size=6, offset=364
+	short targetTilt; // size=0, offset=370
+	struct _Rotation targetRotation; // size=8, offset=372
+	short targetFocusDistance; // size=0, offset=380
+	struct _Position targetFocusPoint; // size=6, offset=382
+	short collisionTargetFocusDistance; // size=0, offset=388
+	struct _Rotation targetFocusRotation; // size=8, offset=390
+	short tfaceTilt; // size=0, offset=398
+	struct _Rotation collisionTargetFocusRotation; // size=8, offset=400
+	short smooth; // size=0, offset=408
+	struct _CameraKey *cameraKey; // size=24, offset=412
+	struct _Sphere focusSphere; // size=12, offset=416
+	struct _Sphere smallBaseSphere; // size=12, offset=428
+	struct _Sphere posSphere; // size=12, offset=440
+	short lookTimer; // size=0, offset=452
+	short lookSavedMode; // size=0, offset=454
+	short presetIndex; // size=0, offset=456
+	short presetFocusDistance[3]; // size=6, offset=458
+	long minFocusDistance; // size=0, offset=464
+	long maxFocusDistance; // size=0, offset=468
+	long minTilt; // size=0, offset=472
+	long maxTilt; // size=0, offset=476
+	long pad[3]; // size=12, offset=480
+	long minXYDist; // size=0, offset=492
+	long maxXYDist; // size=0, offset=496
+	long oppositeError; // size=0, offset=500
+	long tempsplinePointAhead; // size=0, offset=504
+	long noTeleport; // size=0, offset=508
+	long focusDistanceList[3][3]; // size=36, offset=512
+	long tiltList[3][3]; // size=36, offset=548
+	long cineControl; // size=0, offset=584
+	short stack; // size=0, offset=588
+	short targetStack; // size=0, offset=590
+	long savedMode[3]; // size=12, offset=592
+	long savedTargetFocusDistance[3]; // size=12, offset=604
+	struct _Rotation savedFocusRotation; // size=8, offset=616
+	short savedFocusDistance; // size=0, offset=624
+	short signalFocusDistance; // size=0, offset=626
+	struct _SavedCinematic savedCinematic[3]; // size=336, offset=628
+	struct _Rotation savedfocusRotation; // size=8, offset=964
+	struct _Position signalPos; // size=6, offset=972
+	short pad11; // size=0, offset=978
+	struct _Rotation signalRot; // size=8, offset=980
+	struct _Position debugPos; // size=6, offset=988
+	short pad4; // size=0, offset=994
+	struct _Rotation debugRot; // size=8, offset=996
+	struct _Position nondebugPos; // size=6, offset=1004
+	short forced_movement; // size=0, offset=1010
+	short last_forced_movement; // size=0, offset=1012
+	short rotDirection; // size=0, offset=1014
+	unsigned long lastModTime; // size=0, offset=1016
+	struct _Rotation lookRot; // size=8, offset=1020
+	struct MultiSpline *Spline00; // size=0, offset=1028
+	struct MultiSpline *Spline01; // size=0, offset=1032
+	///@FIXME union? struct .107fake data; // size=96, offset=1036
+	long cuckooTimer; // size=0, offset=1132
+	short teleportZRot; // size=0, offset=1136
+	short extraZRot; // size=0, offset=1138
+	short extraXRot; // size=0, offset=1140
+	short leftTimer; // size=0, offset=1142
+	short rightTimer; // size=0, offset=1144
+	short collideRotControl; // size=0, offset=1146
+	short collision_lastPush; // size=0, offset=1148
+	short collision_timer; // size=0, offset=1150
+	long halfwidth_per_z; // size=0, offset=1152
+	long halfheight_per_z; // size=0, offset=1156
+	unsigned long instance_mode; // size=0, offset=1160
+	long instance_xyvel; // size=0, offset=1164
+	long instance_prev_xyvel; // size=0, offset=1168
+	struct _Position real_focuspoint; // size=6, offset=1172
+	short always_rotate_flag; // size=0, offset=1178
+	short follow_flag; // size=0, offset=1180
+	short actual_x_rot; // size=0, offset=1182
+	short actual_vel_x; // size=0, offset=1184
+	short actual_acc_x; // size=0, offset=1186
+	short x_rot_change; // size=0, offset=1188
+	short focuspoint_fallz; // size=0, offset=1190
+	short lead_angle; // size=0, offset=1192
+	short lead_vel; // size=0, offset=1194
+	short lead_accl; // size=0, offset=1196
+	short lead_timer; // size=0, offset=1198
+};
+
+
+struct _BlockVramEntry {
+	struct _BlockVramEntry *next; // size=28, offset=0
+	unsigned char type; // size=0, offset=4
+	unsigned char flags; // size=0, offset=5
+	short time; // size=0, offset=6
+	long ID; // size=0, offset=8
+	short x; // size=0, offset=12
+	short y; // size=0, offset=14
+	short w; // size=0, offset=16
+	short h; // size=0, offset=18
+	long area; // size=0, offset=20
+	///@FIXME union union .244fake udata; // size=4, offset=24
+};
+
 extern char *BufferLoadPtr1; // offset 0x800BFEEC
 extern char *BufferLoadPtr2; // offset 0x800BFEF0
 extern char *missionText[1]; // offset 0x800B5BE0
@@ -1291,8 +1802,8 @@ extern struct DebugMenuLine TrainingMenu[5]; // offset 0x800B5438
 extern struct DebugMenuLine UnderCityMenu[7]; // offset 0x800B4F70
 extern struct DebugMenuLine UnderMenu[3]; // offset 0x800B52D0
 extern struct DebugMenuLine WaterMenu[4]; // offset 0x800B5018
-extern struct DISPENV disp[2]; // offset 0x800C1B18
-extern struct DRAWENV draw[2]; // offset 0x800C1B44
+extern DISPENV disp[2]; // offset 0x800C1B18
+extern DRAWENV draw[2]; // offset 0x800C1B44
 extern struct FontPos fontPos[45]; // offset 0x800B5AE0
 extern struct FontTracker fontTracker; // offset 0x800C112C
 extern struct GameTracker gameTrackerX; // offset 0x800C1C84
@@ -1445,7 +1956,7 @@ static short windy; // offset 0x800BF6CE
 //static struct .187fake functionChoiceTable[8]; // offset 0x800B6668
 static struct __EngagedInstance EngagedList[15]; // offset 0x800C555C
 static struct __FitPoint constrictData[32]; // offset 0x800C543C
-static struct __Force *ExternalForces; // offset 0x800C4F0C
+//static struct __Force *ExternalForces; // offset 0x800C4F0C
 static struct __Force ExternalForces[4]; // offset 0x800C54FC
 static struct __GlyphHudSaveData HudSave; // offset 0x800C4690
 static struct __Player Raziel; // offset 0x800C4F4C
@@ -1459,7 +1970,7 @@ static struct _G2AnimChanStatusBlockPool_Type _chanStatusBlockPool; // offset 0x
 static struct _G2AnimControllerPool_Type _controllerPool; // offset 0x800C4E94
 static struct _G2AnimInterpInfo_Type razInterpInfo[3]; // offset 0x800C540C
 static struct _G2AnimInterpStateBlockPool_Type _interpStateBlockPool; // offset 0x800C4EA4
-static struct _G2AnimSegValue_Type _segValues[80]; // offset 0x800C4714
+//static struct _G2AnimSegValue_Type _segValues[80]; // offset 0x800C4714
 static struct _G2AppDataVM_Type _appDataVM; // offset 0x800C4EB4
 static struct _G2SVector3_Type *ExtraRot; // offset 0x800C54EC
 static struct _G2SVector3_Type ExtraRotData; // offset 0x800C54E4

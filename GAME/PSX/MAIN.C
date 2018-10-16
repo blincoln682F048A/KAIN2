@@ -1,15 +1,26 @@
 #include "G2TYPES.H"
 
+#include "AADLIB.H"
+#include "GAMELOOP.H"
+#include "GAMEPAD.H"
 #include "LOAD3D.H"
 #include "MAING2.H"
 #include "MAINVM.H"
 #include "MEMPACK.H"
+#include "PHYSOBS.H"
+#include "SOUND.H"
+#include "STRMLOAD.H"
+#include "VRAM.H"
+#include "VOICEXA.H"
 
 #include <LIBETC.H>
 #include <LIBGPU.H>
 #include <LIBAPI.H>
 #include <LIBGPU.H>
+#include <LIBGTE.H>
 #include <STDDEF.H>
+
+extern long TimerTick();///@FIXME ASM
 
 void DoCinematicStuff(struct GameTracker* gameTracker, struct MainTracker* mainTracker)
 {
@@ -110,19 +121,16 @@ void ClearDisplay()
 	PutDrawEnv(&draw[gameTrackerX.dispPage]);
 	DrawPrim(&clearRect);
 	DrawSync(0);
-	PutDispEnv(disp[gameTrackerX.dispPage]);
+	PutDispEnv(&disp[gameTrackerX.dispPage]);
 	SetDispMask(1);
 }
-/*
-* Offset 0x80038E38
-* C:\kain2\game\PSX\MAIN.C (line 420)
-* Stack frame base $sp, size 56
-* Saved registers at offset -8: s0 s1 s2 s3 ra
-*/
-void /*$ra*/ InitDisplay(int w /*$s2*/, int h /*$s0*/)
-{ // line 1, offset 0x80038e38
-	RECT r; // stack offset -32
-} // line 16, offset 0x80038f0c
+
+void InitDisplay(int w /*$s2*/, int h /*$s0*/)
+{
+	struct RECT r;
+
+
+}
 
 void StartTimer()
 {
@@ -234,7 +242,7 @@ void MAIN_ShowPalWarningScreen(struct GameTracker* gameTracker)
 	if (warningScreen != NULL)
 	{
 		LOAD_LoadTIM(warningScreen, 0, gameTracker->dispPage << 8, 0, 0);
-		MEMPACK_Free(warningScreen);
+		MEMPACK_Free((char*)warningScreen);
 	}
 }
 
@@ -245,7 +253,7 @@ void MAIN_ShowLegalWarningScreen(struct GameTracker* gameTracker)
 	if (warningScreen != NULL)
 	{
 		LOAD_LoadTIM(warningScreen, 0, gameTracker->dispPage << 8, 0, 0);
-		MEMPACK_Free(warningScreen);
+		MEMPACK_Free((char*)warningScreen);
 	}
 }
 
@@ -265,10 +273,11 @@ void /*$ra*/ MAIN_MainMenuInit()
   * Stack frame base $sp, size 32
   * Saved registers at offset -8: s0 s1 ra
   */
-void /*$ra*/ MAIN_FreeMainMenuStuff()
-{ // line 1, offset 0x800396a8
+void MAIN_FreeMainMenuStuff()
+{
 	long i; // $s1
-} // line 11, offset 0x80039710
+
+}
   /*
   * Offset 0x8003973C
   * C:\kain2\game\PSX\MAIN.C (line 850)
@@ -293,14 +302,9 @@ long /*$ra*/ MAIN_DoMainMenu(struct GameTracker *gameTracker /*stack 0*/, struct
 void /*$ra*/ MAIN_ShowFeaturesInit()
 {
 }
-/*
-* Offset 0x80039C3C
-* C:\kain2\game\PSX\MAIN.C (line 1064)
-* Stack frame base $sp, size 64
-* Saved registers at offset -4: s0 s1 s2 s3 s4 s5 s6 ra
-*/
+
 int /*$ra*/ MainG2(void* appData /*$s6*/)
-{ // line 1, offset 0x80039c3c
+{
 	struct MainTracker mainTrackerX; // stack offset -48
 	struct MainTracker* mainTracker; // $s0
 	struct GameTracker* gameTracker; // $s1
@@ -331,21 +335,18 @@ int /*$ra*/ MainG2(void* appData /*$s6*/)
 				MAIN_DoMainInit();
 				mainTracker->mainState = 7;
 				mainTracker->movieNum = 0;
-				//j       def_80039D34
 				break;
 			case 4:
 				DrawSync(0);
 				MAIN_ShowPalWarningScreen(gameTracker);
 				gameTracker->vblCount = 0;
 				mainTracker->mainState = 6;
-				//j       def_80039D34     # jumptable 80039D34 default case
 				break;
 			case 5:
 				DrawSync(0);
 				MAIN_ShowLegalWarningScreen(gameTracker);
 				gameTracker->vblCount = 0;
 				mainTracker->mainState = 6;
-				//j       def_80039D34     # jumptable 80039D34 default case
 				break;
 			case 6:
 				if (gameTracker->vblCount > 0x1E)
@@ -353,7 +354,6 @@ int /*$ra*/ MainG2(void* appData /*$s6*/)
 					mainTracker->mainState = 7;
 					mainTracker->movieNum = 0;
 				}
-				//j       def_80039D34
 				break;
 			case 7:
 				DoCinematicStuff(gameTracker, mainTracker);
@@ -373,7 +373,7 @@ int /*$ra*/ MainG2(void* appData /*$s6*/)
 				break;
 			case 9:
 				gameTrackerX.MorphType = 0;
-				ProcessArgs("\kain2\game\psx\kain2.arg", &gameTracker->baseAreaName[0], gameTracker);
+				ProcessArgs("\\kain2\\game\\psx\\kain2.arg", &gameTracker->baseAreaName[0], gameTracker);
 				MAIN_MainMenuInit();
 				mainTracker->mainState = 10;
 				break;
@@ -410,7 +410,7 @@ int /*$ra*/ MainG2(void* appData /*$s6*/)
 				MAIN_ShowLoadingScreen();
 				FONT_ReloadFont();
 				DrawSync(0);
-				gameTracker.frameCount = 0;
+				gameTracker->frameCount = 0;
 				STREAM_Init();
 				GAMELOOP_LevelLoadAndInit(&gameTracker->baseAreaName, gameTracker);
 

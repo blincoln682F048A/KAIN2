@@ -19,11 +19,11 @@ source_group("RAZIEL" FILES ${GLOBAL_RAZIEL_SRCS})
 #Setup include directories
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/PSX_G2)
-include_directories(${GAME_CODE_DIR})
-include_directories(${G2_CODE_DIR})
-include_directories(${MONSTER_CODE_DIR})
-include_directories(${PLAN_CODE_DIR})
-include_directories(${RAZIEL_CODE_DIR})
+include_directories(${GLOBAL_GAME_CODE_DIR})
+include_directories(${GLOBAL_G2_CODE_DIR})
+include_directories(${GLOBAL_MONSTER_CODE_DIR})
+include_directories(${GLOBAL_PLAN_CODE_DIR})
+include_directories(${GLOBAL_RAZIEL_CODE_DIR})
 
 add_executable(
 ${PROJECT_NAME}

@@ -100,7 +100,7 @@ void VRAM_RearrangeVramsLayer(long whichLayer /*$s6*/)
     struct _BlockVramEntry *curBlock; // $s1
     struct _BlockVramEntry *savedVramBlocksPTR[32]; // stack offset -1072
     struct _BlockVramEntry savedVramBlocks[32]; // stack offset -944
-    struct RECT vramLoc; // stack offset -48
+    RECT vramLoc; // stack offset -48
     long numBlocks; // $s3
     long d; // $s4
     short x; // stack offset -40
@@ -111,7 +111,7 @@ void VRAM_RearrangeVramsLayer(long whichLayer /*$s6*/)
 void VRAM_TransferBufferToVram(void *dataPtr /*$s3*/, long dataSize /*$s2*/, short status /*$s5*/, void *data1 /*$a3*/, void *data2 /*stack 16*/)
 {
     struct VramBuffer *vramControl; // $s1
-    struct RECT rect; // stack offset -40
+    RECT rect; // stack offset -40
     { // line 27, offset 0x8006ddd8
     } // line 57, offset 0x8006de94
     { // line 62, offset 0x8006de9c
@@ -120,7 +120,7 @@ void VRAM_TransferBufferToVram(void *dataPtr /*$s3*/, long dataSize /*$s2*/, sho
 
 long VRAM_GetObjectVramSpace(long* addr /*$a0*/, struct _ObjectTracker* objectTracker /*$s2*/)
 {
-    struct RECT rect; // stack offset -24
+    RECT rect; // stack offset -24
     long *picdim; // $a0
     long x; // $v0
     long y; // $v1
@@ -132,7 +132,7 @@ long VRAM_GetObjectVramSpace(long* addr /*$a0*/, struct _ObjectTracker* objectTr
 
 long VRAM_GetLevelVramSpace(long* addr /*$a0*/, struct _StreamUnit* streamUnit /*$a1*/)
 {
-	struct RECT rect; // stack offset -8
+	RECT rect; // stack offset -8
 	long *picdim; // $a2
 	long x; // $v0
 	long y; // $v1

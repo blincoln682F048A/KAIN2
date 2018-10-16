@@ -2,6 +2,7 @@
 
 #include "MEMPACK.H"
 #include "G2TYPES.H"
+#include "SUPPORT.H"
 
 #include <SYS\TYPES.H>
 #include <LIBCD.H>
@@ -10,6 +11,7 @@
 #include <LIBSN.H>
 #include <STDLIB.H>
 #include <STDIO.H>
+
 
 struct LoadStatus loadStatus;
 
@@ -174,18 +176,11 @@ void /*$ra*/ LOAD_DoCDBufferedReading(struct FileAccessInfo* currentQueueFile /*
     long actualReadSize; // $a1
     long status; // $a2
 } // line 91, offset 0x80037b34
-/*
- * Offset 0x80037B48
- * C:\kain2\game\LOAD3D.C (line 642)
- * Stack frame base $sp, size 24
- * Saved registers at offset -8: ra
- */
-void /*$ra*/ LOAD_SetupFileToDoCDReading(struct FileAccessInfo* currentQueueFile /*$a1*/)
-{ // line 1, offset 0x80037b48
+
+void LOAD_SetupFileToDoCDReading(struct FileAccessInfo* currentQueueFile /*$a1*/)
+{
     long i; // $a0
-
-
-} // line 34, offset 0x80037c1c
+}
 /*
  * Offset 0x80037C68
  * C:\kain2\game\LOAD3D.C (line 754)
@@ -225,7 +220,7 @@ void LOAD_ProcessReadQueue()
 	}
 	else if (currentQueueFile->status == 3 || currentQueueFile->status == 6)
 	{
-		if (0x401640 < TIMER_TimeDiff2(loadStatus.cdWaitTime))
+		///if (0x401640 < TIMER_TimeDiff2(loadStatus.cdWaitTime))
 		{
 			currentQueueFile->status = 1;
 		}
@@ -332,14 +327,14 @@ void /*$ra*/ LOAD_InitCdLoader(char* bigFileName /*$s0*/, char* voiceFileName /*
 	sizeOfContents = ((loadStatus.bigFile.numFiles << 1) + loadStatus.bigFile.numFiles) << 3;
 	sizeOfContents = ((sizeOfContents & 0x7FF) >> 11) << 11;
 
-	loadStatus.bigFile.contents = (struct BigFileFileInfo*)MEMPACK_Malloc(sizeOfContents);
+	loadStatus.bigFile.contents = (struct BigFileFileInfo*)MEMPACK_Malloc(sizeOfContents, 8);
 	if (loadStatus.bigFile.contents == NULL)
 	{
 		PSYQpause();
 	}
 	//loc_80038064
 	fileId = LOAD_CdReadFromBigFile(0, (unsigned long*)loadStatus.bigFile.contents, (unsigned long*)loadStatus.bigFile.contents, sizeOfContents >> 11, 0, 0, 0);
-	loadStatus.bigFile.contents = &((long*)loadStatus.bigFile.contents)[1];
+	loadStatus.bigFile.contents = (struct BigFileFileInfo*)((long*)loadStatus.bigFile.contents)[1];
 
 	if (loadStatus.loadQueue[fileId].status != 0)
 	{
@@ -497,8 +492,8 @@ long LOAD_HashName(char* string)
 	length = 0;
 	ext = 0;
 
-	strl = strlen(string) - 1;
-	pos = strchr(string, '.');
+	///strl = strlen(string) - 1;
+	///pos = strchr(string, '.');
 
 	endPos = 0;
 	if (pos++ != NULL)
@@ -644,65 +639,6 @@ void LOAD_LoadTIM2(long* addr, long x_pos, long y_pos, long width, long height)
  */
 void* LOAD_RelocBinaryData(long* data /*$s0*/)
 {
-    long* dataAddr; // $s1
-    long* lastMoveDest; // $v1
-    long tableSize; // $s3
-    long fileSize; // $v0
-    struct RedirectList redirectListX; // stack offset -32
-    struct RedirectList* redirectList; // $a0
-
-	//a0 = &redirectListX;
-	dataAddr = data;
-	//v0 = &dataAddr[1];
-	redirectListX.data = &dataAddr[1];
-	//v1 = *dataAddr
-	fileSize = *dataAddr + 512;
-	redirectListX.numPointers = *dataAddr;
-
-	if (fileSize < 0)
-	{
-		fileSize = *dataAddr + 1023;
-	}
-
-	//loc_800388A4
-	fileSize >>= 9;
-	tableSize = fileSize << 9;
-	RESOLVE_Pointers(&redirectListX, &dataAddr[filesize << 9], dataAddr);
-	fileSize = MEMPACK_Size(dataAddr);
-
-	fileSize >>= 2;
-	fileSize -= tableSize;
-	lastMoveDest = dataAddr - fileSize;
-
-	//v0 = dataAddr < lastMoveDest ? 1 : 0;
-		sltu    $v0, $s1, $v1
-		beqz    $v0, loc_80038900
-		move    $a0, $s2
-		addu    $v0, $a0, $s0
-
-		loc_800388E4 :
-		lw      $v0, 0($v0)
-		nop
-		sw      $v0, 0($s0)
-		addiu   $s0, 4
-		sltu    $v0, $s0, $v1
-		bnez    $v0, loc_800388E4
-		addu    $v0, $a0, $s0
-
-		loc_80038900 :
-		move    $a0, $s1
-		jal     sub_8005047C
-		sll     $a1, $s3, 2
-		move    $v0, $s1
-		lw      $ra, 0x30 + var_8($sp)
-		lw      $s3, 0x30 + var_C($sp)
-		lw      $s2, 0x30 + var_10($sp)
-		lw      $s1, 0x30 + var_14($sp)
-		lw      $s0, 0x30 + var_18($sp)
-		jr      $ra
-		addiu   $sp, 0x30
-		# End of function sub_80038860
-
 	return NULL;
 } // line 21, offset 0x80038900
 

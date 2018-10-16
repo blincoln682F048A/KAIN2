@@ -1,14 +1,12 @@
-/*
-* Offset 0x8006E0D4
-* C:\kain2\game\PSX\SUPPORT.C (line 56)
-* Stack frame base $sp, size 280
-* Saved registers at offset -4: s0 ra
-*/
-int /*$ra*/ printf(char *fmt /*stack 0*/)
-{ // line 1, offset 0x8006e0d4
+#include "SUPPORT.H"
+
+#include <STDIO.H>
+
+int printf(char* fmt /*stack 0*/)
+{
 	int len; // $s0
 	char string[256]; // stack offset -264
-} // line 1, offset 0x8006e0d4
+}
   /*
   * Offset 0x8006E124
   * C:\kain2\game\PSX\SUPPORT.C (line 78)

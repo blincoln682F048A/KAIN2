@@ -2,10 +2,13 @@
 
 #include "G2TYPES.H"
 
+#include <LIBSPU.H>
+#include <STDDEF.H>
+
 void VOICEXA_Init()
 {
 	int i; // $s2
-	struct CdlFILE fp; // stack offset -40
+	CdlFILE fp; // stack offset -40
 	struct XAVoiceTracker *vt; // $a0
 }
   /*
@@ -63,17 +66,41 @@ void /*$ra*/ processVoiceCommands(struct XAVoiceTracker *vt /*$s1*/)
   */
 void /*$ra*/ voiceCmdPlay(struct XAVoiceTracker *vt /*$s1*/, short voiceIndex /*$s2*/)
 { // line 1, offset 0x800a6c40
-	struct CdlFILTER filter; // stack offset -88
-	struct CdlLOC pos; // stack offset -80
+	CdlFILTER filter; // stack offset -88
+	CdlLOC pos; // stack offset -80
 	unsigned char mode; // stack offset -32
-	struct SpuCommonAttr spuattr; // stack offset -72
+	SpuCommonAttr spuattr; // stack offset -72
 	struct XAVoiceListEntry *voice; // $s3
 	struct XAFileInfo *file; // $s0
 } // line 62, offset 0x800a6d90
 
 void voiceCmdStop(struct XAVoiceTracker* vt /*$a0*/, short cmdParam /*$a1*/)
 {
-	struct SpuCommonAttr spuattr; // stack offset -48
+	SpuCommonAttr spuattr; // stack offset -48
+
+	//v0 = vt->voiceStatus;
+	//a1 = 9;
+	if (vt->voiceStatus != 0)
+	{
+		putCdCommand(vt, 9, 0, NULL);
+		spuattr.mask = 0x2200;
+		///@TODO
+		//sw      $v0, 0x40 + var_30($sp)
+		//sw      $zero, 0x40 + var_18($sp)
+		//sw      $zero, 0x40 + var_C($sp)
+		SpuSetCommonAttr(&spuattr);
+	}//loc_800A6DF8
+
+	/*li      $a1, 1
+	lh      $a0, -0x37D0($gp)
+	aadStartMusicMasterVolFade();
+	move    $a2, $zero
+
+	loc_800A6DF8 :
+	lw      $ra, 0x40 + var_8($sp)
+	nop
+	jr      $ra
+	addiu   $sp, 0x40*/
 }
 
 void voiceCmdPause(struct XAVoiceTracker* vt /*$a0*/, short cmdParam /*$a1*/)
@@ -96,7 +123,8 @@ void VOICEXA_Play(int voiceIndex /*$a3*/, int queueRequests /*$a1*/)
 
 void VOICEXA_Tick()
 {
-	struct XAVoiceTracker *vt; // $s0
+	struct XAVoiceTracker* vt = &voiceTracker; // $s0
+
 }
 
 int VOICEXA_IsPlaying()

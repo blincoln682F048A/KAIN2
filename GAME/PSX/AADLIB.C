@@ -457,6 +457,7 @@ unsigned short /*$ra*/ aadSetSlotTempo(unsigned short slotNumber /*$a0*/, struct
 	struct _AadSequenceSlot *slot; // $a0
 	unsigned long tickTime; // $v1
 	unsigned long tickTimeRemainder; // $a2
+
 } // line 8, offset 0x80054454
   /*
   * Offset 0x80054518
@@ -464,16 +465,12 @@ unsigned short /*$ra*/ aadSetSlotTempo(unsigned short slotNumber /*$a0*/, struct
   * Stack frame base $sp, size 24
   * Saved registers at offset -4: s0 ra
   */
-unsigned short /*$ra*/ aadStartSlot(unsigned short slotNumber /*$a0*/)
-{ // line 1, offset 0x80054518
-	struct _AadSequenceSlot *slot; // $s0
-} // line 13, offset 0x80054584
-  /*
-  * Offset 0x80054598
-  * C:\kain2\game\PSX\AADLIB.C (line 2325)
-  * Stack frame base $sp, size 24
-  * Saved registers at offset -4: s0 ra
-  */
+unsigned short aadStartSlot(unsigned short slotNumber)
+{
+	struct _AadSequenceSlot* slot; // $s0
+
+}
+
 unsigned short aadStopSlot(unsigned short slotNumber)
 {
 	struct _AadSequenceSlot* slot;
@@ -602,12 +599,8 @@ unsigned short /*$ra*/ aadMuteChannels(unsigned short slotNumber /*$a0*/, unsign
 	unsigned short i; // $a1
 	struct _AadSequenceSlot *slot; // $t1
 } // line 32, offset 0x80054a20
-  /*
-  * Offset 0x80054A28
-  * C:\kain2\game\PSX\AADLIB.C (line 2509)
-  * Stack frame base $sp, size 0
-  */
-unsigned short /*$ra*/ aadUnMuteChannels(unsigned short slotNumber /*$a0*/, unsigned short channelList /*$a1*/)
+
+unsigned short aadUnMuteChannels(unsigned short slotNumber, unsigned short channelList)
 {
 }
 
