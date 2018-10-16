@@ -34,3 +34,9 @@ void GAMELOOP_ResetGameStates()
 {
 	EVENT_Init();
 }
+
+void PSX_GameLoop(struct GameTracker* gameTracker)
+{
+	GAMEPAD_Process(gameTracker);
+	GAMELOOP_Process(gameTracker);
+}

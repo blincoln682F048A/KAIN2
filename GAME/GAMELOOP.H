@@ -6,5 +6,6 @@
 extern void GAMELOOP_AllocStaticMemory();
 extern void GAMELOOP_SystemInit(struct GameTracker* gameTracker);
 extern void GAMELOOP_ResetGameStates();
+extern void PSX_GameLoop(struct GameTracker* gameTracker);
 
 #endif
