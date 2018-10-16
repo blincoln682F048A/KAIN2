@@ -58,13 +58,15 @@ int /*$ra*/ atoi(char *str /*$a1*/)
 	int val; // $a2
 	int neg; // $a3
 } // line 21, offset 0x8006e4f4
-  /*
-  * Offset 0x8006E504
-  * C:\kain2\game\PSX\SUPPORT.C (line 318)
-  * Stack frame base $sp, size 0
-  */
-int /*$ra*/ mytolower(int c /*$a0*/)
+
+int mytolower(int c)
 {
+	if ((c - 0x41) < 0x1A)
+	{
+		c += 0x20;
+	}
+
+	return c;
 }
 
 int strcmpi(char* s1, char* s2)
