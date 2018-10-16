@@ -10,7 +10,7 @@ extern int VRAM_ConcatanateMemory(struct _BlockVramEntry* curBlock);
 extern void VRAM_GarbageCollect();
 extern int VRAM_InsertFreeBlock(struct _BlockVramEntry* block);
 extern void VRAM_DeleteFreeBlock(struct _BlockVramEntry* block);
-extern void VRAM_InsertUsedBlock(struct _BlockVramEntry* block;
+extern void VRAM_InsertUsedBlock(struct _BlockVramEntry* block);
 extern void VRAM_DeleteUsedBlock(struct _BlockVramEntry* block);
 extern struct _BlockVramEntry* VRAM_GetOpenBlock();
 extern int VRAM_InsertFreeVram(short x, short y, short w, short h, int flags);
