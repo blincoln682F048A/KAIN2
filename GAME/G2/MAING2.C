@@ -16,7 +16,7 @@ enum _G2Bool_Enum MainG2_InitEngine(void* appData, unsigned int screenWidth, uns
 		return (enum _G2Bool_Enum)0;
 	}
 
-	return (_G2Bool_Enum)(0 < RenderG2_Init(appData) ? 1 : 0);
+	return (enum _G2Bool_Enum)(0 < RenderG2_Init(appData) ? 1 : 0);
 }
 
 void MainG2_ShutDownEngine(void* appData)
