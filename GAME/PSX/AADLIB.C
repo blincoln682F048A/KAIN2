@@ -5,7 +5,7 @@
 
 unsigned long aadGetMemorySize(struct AadInitAttr* attributes)
 {
-	return ((((attributes->numSlots << 1) + attributes->numSlots) << 5) - (attributes->numSlots << 1) + attributes->numSlots) << 2) + 0x1C14;
+	return (((attributes->numSlots << 1) + attributes->numSlots) << 5) - (((attributes->numSlots << 1) + attributes->numSlots) << 2) + 0x1C14;
 }
 
 unsigned short /*$ra*/ aadInit(struct AadInitAttr *attributes /*$s1*/, unsigned char *memoryPtr /*$s0*/)
