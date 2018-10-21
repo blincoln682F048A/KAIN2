@@ -2,6 +2,7 @@
 
 void /*$ra*/ MEMPACK_Init()
 {
+#if 0
 		//lui     $v0, 0x801F
 		lw      $v1, -0x666C($gp)
 		la      $v0, unk_801FF000
@@ -27,6 +28,7 @@ void /*$ra*/ MEMPACK_Init()
 		addu    $v0, $v1
 		sw      $v0, -0x31D8($gp)
 		jr      $ra
+#endif
 }
 /*
 * Offset 0x800501A8

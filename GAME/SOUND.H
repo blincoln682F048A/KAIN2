@@ -3,9 +3,6 @@
 
 #include "G2TYPES.H"
 
-#include <STDLIB.H>
-#include <STDIO.H>
-
 extern struct SoundEffectChannel* SndOpenSfxChannel(unsigned char* channelNum);
 extern void SndCloseSfxChannel(unsigned char channelNum);
 extern struct SoundEffectChannel* SndGetSfxChannel(unsigned char channelNum);

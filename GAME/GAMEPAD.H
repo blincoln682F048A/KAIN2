@@ -1,10 +1,10 @@
 #ifndef GAMEPAD_H
 #define GAMEPAD_H
 
-#include "GAMEPAD.H"
+#include "G2TYPES.H"
 
-extern void GAMEPAD_Commands(long* command[5], long *data[5], long pad);
-extern void GAMEPAD_HandleDualShock()
+extern void GAMEPAD_Commands(long* command[5], long* data[5], long pad);
+extern void GAMEPAD_HandleDualShock();
 extern void GAMEPAD_Shock(int motor0_speed, int motor0_time, int motor1_speed, int motor1_time);
 extern void  GAMEPAD_Init();
 extern void GAMEPAD_FillOutDemoNames(char* baseAreaName, char* demoName);

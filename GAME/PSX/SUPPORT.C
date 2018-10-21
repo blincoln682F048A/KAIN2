@@ -1,7 +1,5 @@
 #include "SUPPORT.H"
 
-#include <STDIO.H>
-
 int printf(char* fmt /*stack 0*/)
 {
 	int len; // $s0

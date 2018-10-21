@@ -5,8 +5,6 @@
 #include <LIBAPI.H>
 #include <LIBETC.H>
 #include <LIBPAD.H>
-#include <STDLIB.H>
-#include <STDIO.H>
 #include <STRING.H>
 
 void GAMEPAD_Commands(long* command[5] /*$t4*/, long *data[5] /*$t3*/, long pad /*$a2*/)
@@ -64,13 +62,13 @@ void  GAMEPAD_Init()
 
 	
 	//loc_800327FC
-	memset(&gDummyCommand[0][0], 0, sizeof(gDummyCommand));
+	/*memset(&gDummyCommand[0][0], 0, sizeof(gDummyCommand));
 	memset(&readGPBuffer1, 0, 0x22);
 	memset(&readGPBuffer2, 0, 0x22);
 	gpbuffer1.data = 0xFFFF;
 	gpbuffer1.transStatus = 0;
 	gpbuffer2.data = 0xFFFF;
-	gpbuffer2.transStatus = 0;
+	gpbuffer2.transStatus = 0;*/
 
 	return;
 }

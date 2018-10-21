@@ -9,8 +9,6 @@
 #include <LIBETC.H>
 #include <LIBGPU.H>
 #include <LIBSN.H>
-#include <STDLIB.H>
-#include <STDIO.H>
 
 
 struct LoadStatus loadStatus;

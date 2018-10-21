@@ -118,7 +118,7 @@ void aadExecuteSfxCommand(struct AadSfxCommand* sfxCmd)
 {
 	if (sfxCmd->statusByte < 9)
 	{
-		sfxCmdFunction[sfxCmd->statusByte]();//sfxCmdFunction = functionTbl, statusByte = Index
+		//sfxCmdFunction[sfxCmd->statusByte]();//sfxCmdFunction = functionTbl, statusByte = Index
 	}
 	//loc_80056CB0
 	return;
@@ -219,7 +219,7 @@ void sfxCmdLockVoice(struct AadSfxCommand* sfxCmd)
 	struct AadSynthVoice* voice; // $v1
 
 	callbackProc = sfxCmd->ulongParam;///@FIXME assign
-	voice = aadAllocateVoice(0xFF);
+	//voice = aadAllocateVoice(0xFF);
 
 	if (voice != NULL)
 	{
@@ -234,6 +234,7 @@ void sfxCmdLockVoice(struct AadSfxCommand* sfxCmd)
 
 void sfxCmdSetVoiceAttr(struct AadSfxCommand* sfxCmd)
 {
+#if 0
 	unsigned long v;
 	unsigned long vmask;
 	struct SpuVoiceAttr* voiceAttr;
@@ -256,7 +257,7 @@ void sfxCmdSetVoiceAttr(struct AadSfxCommand* sfxCmd)
 	SpuSetVoicePitch(v, voiceAttr->pitch);
 	SpuSetVoiceStartAddr(v, voiceAttr->addr);
 	SpuSetVoiceADSR1ADSR2(v, voiceAttr->adsr1, voiceAttr->adsr2);
-
+#endif
 	return;
 }
 

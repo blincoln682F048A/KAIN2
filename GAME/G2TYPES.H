@@ -7,6 +7,8 @@
 #include <LIBCD.H>
 #include <LIBSPU.H>
 
+#define NULL 0
+
 typedef unsigned short PadData;
 
 typedef struct
@@ -94,12 +96,6 @@ struct AadInitAttr
 	unsigned short unused2;
 };
 
-struct Signal
-{
-	long id; // size=0, offset=0
-	struct fake97 data; // size=24, offset=4
-};
-
 struct RedirectList
 {
 	long numPointers;
@@ -149,6 +145,19 @@ struct _FX_PRIM {
 	short work3; // size=0, offset=90
 	///union .206fake duo; // size=20, offset=92
 	///struct .207fake ani; // size=12, offset=112
+};
+
+struct TILE
+{
+	unsigned long tag;
+	unsigned char r0;
+	unsigned char g0;
+	unsigned char b0;
+	unsigned char code;
+	short x0;
+	short y0;
+	short w;
+	short h;
 };
 
 struct _FXTracker
@@ -230,6 +239,79 @@ struct _G2Quat_Type
 	short z;
 	short w;
 };
+
+struct _Mirror
+{
+	short a;
+	short b;
+	short c;
+	short d;
+};
+
+struct _MonsterState
+{
+	void(*entryFunction)();
+	void(*stateFunction)();
+};
+struct _MonsterStateChoice
+{
+	int state;
+	struct _MonsterState functions;
+};
+
+struct Signal {
+	long id; // size=0, offset=0
+	union
+	{
+		void *intro; // size=0, offset=0
+		long model; // size=0, offset=4
+	}data; // size=24, offset=4
+};
+
+struct WarpRoom
+{
+	char name[16];
+	struct _StreamUnit* streamUnit;
+};
+
+struct ZSignal
+{
+	short z;
+	struct Signal* upSignal;
+	struct Signal* downSignal;
+};
+
+struct XAVoiceListEntry
+{
+	unsigned short length;
+};
+
+struct TimedSignal
+{
+	long decoupled : 1;
+	long timer : 31;
+	struct _Instance* instance;
+	long(*signalFunc)();
+	struct Signal* signal;
+	struct Signal* nextSignal;
+};
+
+struct _MONAPI_Regenerator
+{
+	unsigned long regenTime;
+	short introUniqueID;
+	short streamUnitID;
+};
+
+struct _GlobalSaveTracker
+{
+	short flags;
+	unsigned long currentTime;
+	short humanOpinionOfRaziel;
+	char numRegens;
+	struct _MONAPI_Regenerator regenEntries[10];
+};
+
 struct _G2AnimQuatInfo_Type
 {
 	struct _G2Quat_Type srcQuat;
@@ -295,6 +377,54 @@ struct _G2AnimChanStatusBlock_Type
 	struct _G2AnimChanStatus_Type chunks[8];
 };
 
+struct Screen_XY
+{
+	short x;
+	short y;
+};
+
+struct SignalInfo
+{
+	long(*signalHandleFunc)();
+	short length;
+	short onlyPlayer;
+	void(*signalRelocateFunc)();
+};
+
+struct SoundEffectChannel
+{
+	unsigned char inUse;
+	unsigned char volume;
+	short pitch;
+	unsigned long handle;
+};
+
+struct _StreamUnit
+{
+	long StreamUnitID;
+	short used;
+	short flags;
+	struct Level *level;
+	char baseAreaName[16];
+	short toSignal;
+	short fromSignal;
+	long FrameCount;
+	struct _BlockVramEntry *saveVramBlock;
+	short eventVariables[6];
+	long FogColor;
+	short UnitFogFar;
+	short UnitFogNear;
+	short TargetFogFar;
+	short TargetFogNear;
+	short sfxFileID;
+	short pad;
+};
+
+struct STracker
+{
+	struct _StreamUnit StreamList[16];
+};
+
 struct _G2AnimSection_Type 
 {
 	unsigned char flags;
@@ -358,11 +488,37 @@ struct EventAliasCommandStruct
 	short interpframes;
 };
 
+struct ObjectPeriodicSound
+{
+	unsigned char type;
+	unsigned char numSfxIDs;
+	unsigned short unused2;
+	unsigned short minVolDistance;
+	short pitch;
+	unsigned short pitchVariation;
+	unsigned char maxVolume;
+	unsigned char maxVolVariation;
+	unsigned char initialDelay;
+	unsigned char initialDelayVariation;
+	unsigned char onTime;
+	unsigned char onTimeVariation;
+	unsigned char offTime;
+	unsigned char offTimeVariation;
+};
+
 struct SoundInstance
 {
 	unsigned char channel;
 	unsigned char state;
 	unsigned char delay;
+};
+
+struct PrintSignal
+{
+	short x;
+	short y;
+	long index;
+	char* text;
 };
 
 struct _SVector
@@ -371,6 +527,58 @@ struct _SVector
 	short y;
 	short z;
 	short pad;
+};
+
+struct FontPos
+{
+	char x;
+	char y;
+	char w;
+	char h;
+};
+
+struct FontChar
+{
+	short x;
+	short y;
+	char c;
+	char jiggleType;
+};
+
+struct ObjectAccess
+{
+	char* objectName;
+	void* object;
+};
+
+struct ObjectFunc {
+	char *scriptName;
+	void(*initFunc)();
+	void(*processFunc)();
+	void(*collideFunc)();
+	unsigned long(*queryFunc)();
+	void(*messageFunc)();
+	void(*additionalCollideFunc)();
+	void(*relocateTuneFunc)();
+	void(*relocateInstObFunc)();
+};
+
+struct FontTracker
+{
+	struct FontChar font_buffer[256];
+	long font_xpos;
+	long font_ypos;
+	long font3d_xpos;
+	long font3d_ypos;
+	long font_buffIndex;
+	short font_tpage;
+	short font_clut;
+	short font_vramU;
+	short font_vramV;
+	short font_width;
+	short sprite_sort_push;
+	short font_vramX;
+	short font_vramY;
 };
 
 struct _Instance
@@ -1042,6 +1250,16 @@ struct AadDynamicBankLoadInfo {
 	unsigned long nextSramAddr; // size=0, offset=20
 	unsigned long flags; // size=0, offset=24
 };
+
+struct _ButtonTexture {
+	short tpage; // size=0, offset=0
+	short clut; // size=0, offset=2
+	short textureW; // size=0, offset=4
+	short textureH; // size=0, offset=6
+	struct _BlockVramEntry *vramBlock; // size=0, offset=8
+	long xshift; // size=0, offset=12
+};
+
 struct AadDynamicSfxLoadInfo {
 	char snfFileName[40]; // size=40, offset=0
 	char smfFileName[40]; // size=40, offset=40
@@ -1350,9 +1568,34 @@ struct _MonsterFunctionTable {
 	char *localVersionID; // size=0, offset=28
 };
 
-struct _MonsterState {
-	void(*entryFunction)(); // size=0, offset=0
-	void(*stateFunction)(); // size=0, offset=4
+struct _Vertex
+{
+	short x;
+	short y;
+	short z;
+};
+
+struct BLK_FILL
+{
+	unsigned long tag;
+	unsigned char r0;
+	unsigned char g0;
+	unsigned char b0;
+	unsigned char code;
+	unsigned short x0;
+	unsigned short y0;
+	unsigned short w;
+	unsigned short h;
+};
+
+struct _TVertex
+{
+	struct _Vertex vertex;
+	unsigned short rgb15;
+	unsigned char r0;
+	unsigned char g0;
+	unsigned char b0;
+	unsigned char code;
 };
 
 struct burntTuneType {
@@ -1758,10 +2001,10 @@ extern struct BLK_FILL clearRect; // offset 0x800C1C60
 extern struct Camera *cameraOne; // offset 0x800BE868
 extern struct Camera *sbsp_camera; // offset 0x800C1F70
 extern struct Camera *theCamera; // offset 0x800BE86C
-extern struct ControllerPacket gpbuffer1; // offset 0x800C18A4
-extern struct ControllerPacket gpbuffer2; // offset 0x800C18EC
-extern struct ControllerPacket readGPBuffer1; // offset 0x800C18C8
-extern struct ControllerPacket readGPBuffer2; // offset 0x800C1910
+extern ControllerPacket gpbuffer1; // offset 0x800C18A4
+extern ControllerPacket gpbuffer2; // offset 0x800C18EC
+extern ControllerPacket readGPBuffer1; // offset 0x800C18C8
+extern ControllerPacket readGPBuffer2; // offset 0x800C1910
 extern struct DebugMenuLine *currentMenu; // offset 0x800BE4A8
 extern struct DebugMenuLine *remotesMenu; // offset 0x800C06C4
 extern struct DebugMenuLine AlukaMenu[10]; // offset 0x800B49A0
@@ -1815,13 +2058,13 @@ extern struct MATRIX *wcTransform; // offset 0x800BE870
 extern struct Object *fontsObject; // offset 0x800BF004
 extern struct ObjectAccess objectAccess[26]; // offset 0x800B5BF8
 extern struct ObjectFunc objectFunc[8]; // offset 0x800B5CC8
-extern struct POLY_F3 flashRect; // offset 0x800C17CC
-extern struct POLY_F3 flashRect2; // offset 0x800C17B8
-extern struct POLY_F4 coverRect; // offset 0x800C1788
-extern struct POLY_F4 screenWipeClear; // offset 0x800C17A0
+extern POLY_F3 flashRect; // offset 0x800C17CC
+extern POLY_F3 flashRect2; // offset 0x800C17B8
+extern POLY_F4 coverRect; // offset 0x800C1788
+extern POLY_F4 screenWipeClear; // offset 0x800C17A0
 extern struct PoolManagementData *poolManagementData; // offset 0x800C4F08
 extern struct PrintSignal signal_printList[5]; // offset 0x800C0CBC
-extern struct RECT PortalRect; // offset 0x800C243C
+extern RECT PortalRect; // offset 0x800C243C
 extern struct Screen_XY C_TXY[3]; // offset 0x800C2444
 extern struct ScriptPCode *currentActionScript; // offset 0x800C2A78
 extern struct SignalInfo signalInfoList[111]; // offset 0x800BE9A4

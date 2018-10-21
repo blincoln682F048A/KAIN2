@@ -6,7 +6,6 @@
 #include <LIBCD.H>
 #include <LIBETC.H>
 #include <LIBGPU.H>
-#include <STDLIB.H>
 
 void DEBUG_SetGameTime(long* var)
 {

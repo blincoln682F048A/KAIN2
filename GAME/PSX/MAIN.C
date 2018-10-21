@@ -12,6 +12,7 @@
 #include "STRMLOAD.H"
 #include "VRAM.H"
 #include "VOICEXA.H"
+#include "SUPPORT.H"
 
 #include <LIBETC.H>
 #include <LIBGPU.H>
@@ -127,7 +128,7 @@ void ClearDisplay()
 
 void InitDisplay(int w /*$s2*/, int h /*$s0*/)
 {
-	struct RECT r;
+	RECT r;
 
 
 }
@@ -214,7 +215,7 @@ void MAIN_DoMainInit()
 	SetGeomOffset(256, 120);
 	SetGeomScreen(320);
 	VRAM_InitVramBlockCache();
-	FONT_Init();
+	//FONT_Init();
 	StartTimer();
 	gameTrackerX.reqDisp = NULL;
 	VSyncCallback(VblTick);
@@ -232,7 +233,7 @@ void MAIN_DoMainInit()
 		gameTrackerX.sound.gVoiceOn = 0;
 	}
 	//loc_80039434
-	srand(0);
+	//srand(0);
 }
 
 void MAIN_ShowPalWarningScreen(struct GameTracker* gameTracker)
@@ -310,11 +311,10 @@ int /*$ra*/ MainG2(void* appData /*$s6*/)
 	struct GameTracker* gameTracker; // $s1
 	long menuPos; // $s2
 
-	menuPos = 0;
 	CheckForDevStation();
 	mainOptionsInit = 0;
 
-	if (MainG2_InitEngine(appData, 512, 240, menuPos) != 0)
+	if (MainG2_InitEngine(appData, 512, 240, NULL) != 0)
 	{
 		MEMPACK_Init();
 		LOAD_InitCd();
@@ -408,11 +408,11 @@ int /*$ra*/ MainG2(void* appData /*$s6*/)
 				}//loc_80039EB0
 
 				MAIN_ShowLoadingScreen();
-				FONT_ReloadFont();
+				//FONT_ReloadFont();
 				DrawSync(0);
 				gameTracker->frameCount = 0;
-				STREAM_Init();
-				GAMELOOP_LevelLoadAndInit(&gameTracker->baseAreaName, gameTracker);
+				//STREAM_Init();
+				//GAMELOOP_LevelLoadAndInit(&gameTracker->baseAreaName, gameTracker);
 
 				if (gameTracker->levelDone == 2)
 				{
@@ -447,8 +447,8 @@ int /*$ra*/ MainG2(void* appData /*$s6*/)
 					FadeOutSayingLoading(gameTracker);
 					SOUND_StopAllSound();
 					SOUND_FreeDynamicMusic();
-					STREAM_DumpAllLevels(0);
-					RemoveAllObjects(gameTracker);
+					//STREAM_DumpAllLevels(0);
+					//RemoveAllObjects(gameTracker);
 					aadFreeLoadBuffer();
 					MEMPACK_FreeByType(4);
 					MEMPACK_FreeByType(14);
@@ -499,7 +499,7 @@ int /*$ra*/ MainG2(void* appData /*$s6*/)
 		CloseEvent(__timerEvent);
 		ExitCriticalSection();
 		VSync(5);
-		VSyncCallbacks();
+		//VSyncCallbacks();
 		StopPAD();
 		ResetGraph(3);
 	}//loc_8003A0CC
